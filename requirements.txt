@@ -8,16 +8,17 @@ uvicorn==0.27.1
 pydantic==2.6.4
 httpx==0.27.0
 requests==2.31.0
-langchain_google_community
-langchain_tavily
-langchain_groq
-langchain_openai
-langgraph
+
+# Google-related packages
 langchain-google-community[places]==0.0.10
+
+# Other langchain integrations
 langchain-tavily==0.1.4
 langchain-groq==0.1.2
 langchain-openai==0.0.8
+
+# Core langchain
+git+https://github.com/langchain-ai/langchain.git
+
+# Other dependencies
 langgraph==0.0.26
-
-
--e .
