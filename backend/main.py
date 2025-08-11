@@ -14,7 +14,9 @@ load_dotenv()
 app = FastAPI()
 
 # Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Serve static files from the frontend directory
+frontend_dir = Path(__file__).parent.parent / "frontend"
+app.mount("/static", StaticFiles(directory=str(frontend_dir / "static")), name="static")
 
 # CORS middleware - Configure to allow all origins for development
 app.add_middleware(
@@ -72,6 +74,10 @@ async def read_index():
 
 if __name__ == "__main__":
     import uvicorn
-    # Create static directory if it doesn't exist
-    Path("static").mkdir(exist_ok=True)
+    # Ensure frontend/static directory exists
+    frontend_dir = Path(__file__).parent.parent / "frontend"
+    (frontend_dir / "static").mkdir(parents=True, exist_ok=True)
+    
+    # Load environment variables
+    load_dotenv()
     uvicorn.run(app, host="0.0.0.0", port=8000)
