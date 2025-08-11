@@ -1,20 +1,35 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import JSONResponse
 from agent.agentic_workflow import GraphBuilder
-from utils.save_to_document import save_document
 import os
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from pathlib import Path
+from typing import Optional
 
 load_dotenv()
 
 app = FastAPI()
+api_router = APIRouter(prefix="/api")
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# CORS middleware configuration
+# Update the origins list with your frontend URL(s)
+origins = [
+    "http://localhost:3000",  # Default React development server
+    "http://localhost:5173",  # Default Vite development server
+    # Add your production frontend URL here
+    # "https://your-frontend-domain.com"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"]
+)
 
 # CORS middleware - Configure to allow all origins for development
 app.add_middleware(
@@ -28,7 +43,7 @@ app.add_middleware(
 class QueryRequest(BaseModel):
     question: str
 
-@app.post("/query")
+@api_router.post("/query")
 async def query_travel_agent(query: QueryRequest):
     try:
         print("Received query:", query)
@@ -66,12 +81,15 @@ async def query_travel_agent(query: QueryRequest):
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
-@app.get("/")
-async def read_index():
-    return FileResponse("static/index.html", media_type="text/html")
+# Include the API router
+app.include_router(api_router)
+
+# Health check endpoint
+@api_router.get("/health")
+async def health_check():
+    return {"status": "healthy"}
 
 if __name__ == "__main__":
     import uvicorn
-    # Create static directory if it doesn't exist
-    Path("static").mkdir(exist_ok=True)
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    load_dotenv()
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

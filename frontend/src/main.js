@@ -3,9 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageForm = document.getElementById('message-form');
     const userInput = document.getElementById('user-input');
     
-    // Get the current host and port from the browser
-    const API_BASE_URL = window.location.origin;
-    const API_URL = `${API_BASE_URL}/query`;
+    // API configuration - Update this to your backend URL
+    const API_BASE_URL = 'http://localhost:8000';  // Change this to your backend URL in production
+    const API_URL = `${API_BASE_URL}/api/query`;
     
     console.log('API URL:', API_URL);
 
@@ -51,44 +51,33 @@ document.addEventListener('DOMContentLoaded', () => {
     messageForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const userMessage = userInput.value.trim();
-        if (!userMessage) return;
+        const message = userInput.value.trim();
+        if (!message) return;
         
         // Add user message to chat
-        addMessage(userMessage, true);
+        addMessage(message, true);
         userInput.value = '';
-        userInput.disabled = true;
         
         // Show typing indicator
         const typingIndicator = showTypingIndicator();
         
         try {
-            console.log('Sending request to:', API_URL);
-            console.log('Request payload:', { question: userMessage });
-            
-            // Send message to FastAPI backend
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
                 },
-                body: JSON.stringify({
-                    question: userMessage
-                }),
-                credentials: 'same-origin'  // Include cookies if any
+                body: JSON.stringify({ question: message }),
+                credentials: 'include'  // Important for cookies if using sessions
             });
             
-            console.log('Response status:', response.status);
-            
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error response:', errorText);
-                throw new Error(`Server responded with status: ${response.status}`);
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
             }
             
             const data = await response.json();
-            console.log('Response data:', data);
             
             // Remove typing indicator
             removeTypingIndicator();
