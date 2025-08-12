@@ -89,7 +89,12 @@ app.include_router(api_router)
 async def health_check():
     return {"status": "healthy"}
 
+@app.get("/")
+def read_root():
+    return {"AI Trip Planner": "Welcome to AI Trip Planner"}
+
 if __name__ == "__main__":
     import uvicorn
     load_dotenv()
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 10000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)
