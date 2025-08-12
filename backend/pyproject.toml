@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "pandas>=2.3.0",
+    "requires-python = ">=3.10,<4.0"
     "gunicorn",
     "uvicorn",
     "fastapi",
@@ -18,6 +18,5 @@ dependencies = [
     "langchain_tavily",
     "langchain_groq",
     "langchain_openai",
-    "langgraph",
-    "langchain-google-community[places]",
+    "langgraph"
 ]
