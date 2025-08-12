@@ -6,4 +6,18 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "pandas>=2.3.0",
+    "gunicorn",
+    "uvicorn",
+    "fastapi",
+    "python-dotenv",
+    "streamlit",
+    "langchain",
+    "langchain-community",
+    "langchain-experimental",
+    "langchain-google-community",
+    "langchain_tavily",
+    "langchain_groq",
+    "langchain_openai",
+    "langgraph",
+    "langchain-google-community[places]",
 ]
