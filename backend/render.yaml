@@ -2,7 +2,7 @@ services:
   - type: web
     name: ai-trip-planner-backend
     env: python
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "pip install gunicorn uvicorn && poetry install --no-root --no-interaction --no-ansi"
     startCommand: "gunicorn main:app --worker-class uvicorn.workers.UvicornWorker"
     envVars:
       - key: PYTHON_VERSION
