@@ -2,11 +2,13 @@ services:
   - type: web
     name: ai-trip-planner-backend
     env: python
-    buildCommand: "poetry install --no-root --no-interaction --no-ansi"
-    startCommand: "gunicorn main:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"
+    buildCommand: |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: gunicorn main:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
-        value: "3.10.18"
+        value: "3.10.0"
       - key: PORT
         value: 10000
       - key: PYTHONUNBUFFERED
