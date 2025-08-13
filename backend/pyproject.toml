@@ -13,7 +13,6 @@ dependencies = [
     "langchain",
     "langchain-community",
     "langchain-experimental",
-    "langchain-google-community",
     "langchain_tavily",
     "langchain_groq",
     "langchain_openai",
